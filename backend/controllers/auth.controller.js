@@ -76,9 +76,54 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
+
+    if (!password || password.length == 0) {
+      return res
+        .status(400)
+        .json({ message: "Password field is required", success: false });
+    }
+
+    if (!email || email.length == 0) {
+      return res
+        .status(400)
+        .json({ message: "Email field is required", success: false });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User with this email does not exist",
+        success: false,
+      });
+    }
+
+    // compare passwords
+
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
+
+    if (!isCorrectPassword) {
+      return res
+        .status(400)
+        .json({ message: "Password is incorrect!", success: false });
+    }
+
+    const token = createToken(user._id);
+
+    const options = {
+      httpOnly: true, // can't be accessed by JS
+      secure: process.env.NODE_ENV !== "development", // only HTTPS in production
+      sameSite: "strict", // CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", token, options)
+      .json({ message: "User logged In successfully", success: true });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -89,5 +134,11 @@ export const login = (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.send("logout page");
+  try {
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Internal Error while Logout session", success: false });
+  }
 };
