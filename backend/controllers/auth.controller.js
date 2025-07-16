@@ -70,7 +70,7 @@ export const signup = async (req, res) => {
     return res.status(201).cookie("accessToken", token, options).json({
       message: "User created successfully",
       success: true,
-      data: newUser,
+      user: newUser,
     });
   } catch (error) {
     console.log(error);

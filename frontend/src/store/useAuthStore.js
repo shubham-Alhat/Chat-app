@@ -1,8 +1,11 @@
 import { create } from "zustand";
+import api from "../lib/axios.js";
 
 const useAuthStore = create((set) => ({
   authUser: null,
-  isChecking: true,
+  setAuthUser: (user) => {
+    set({ authUser: user });
+  },
 }));
 
 export default useAuthStore;
