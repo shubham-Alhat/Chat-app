@@ -121,3 +121,296 @@ If you used `.memoryStorage()` instead of `.diskStorage()` in Multer:
 
 Would you like a full working minimal **React + Node.js + Multer + Cloudinary** upload app (copy-paste project)?
 Let me know and I’ll give you the full code structure.
+
+# Websockets
+
+That's a **GREAT technical question**, Shubham! 🧠
+
+You're pointing to an **important architectural change** when using Socket.IO with Express. Let's break it down.
+
+---
+
+## 🎯 Your Question:
+
+> We initially have `app.listen(...)` to start Express. But in Socket.IO setup, you show `server.listen(...)` from `http.createServer(app)`. So:
+
+- What happens to `app.listen(...)`?
+- Is `server.listen(...)` a WebSocket server?
+- Are we overriding something?
+
+---
+
+## ✅ Clear Explanation
+
+### 🔹 What is `app.listen(...)`?
+
+Normally in a basic Express app, you write:
+
+```js
+const app = express();
+
+app.listen(5000, () => {
+  console.log("Server is running");
+});
+```
+
+Here, `app.listen(...)` is just a shortcut behind the scenes for:
+
+```js
+const http = require('http');
+const server = http.createServer(app);
+server.listen(...);
+```
+
+So **`app.listen(...)` is syntactic sugar** for creating an HTTP server and binding it to a port.
+
+---
+
+### 🔹 Why do we switch to `http.createServer(app)`?
+
+Because **Socket.IO needs low-level access to the HTTP server** to **"upgrade"** the connection from HTTP to WebSocket.
+
+So, we do this instead:
+
+```js
+const app = express();
+const http = require("http");
+const server = http.createServer(app); // <-- raw server created
+
+const io = new Server(server); // <-- bind socket.io to raw server
+
+server.listen(5000, () => {
+  console.log("WebSocket + Express server running");
+});
+```
+
+---
+
+### 🔥 What's actually happening:
+
+| Layer                            | Purpose                                          |
+| -------------------------------- | ------------------------------------------------ |
+| `express()`                      | Handles HTTP routes (e.g., `/api/...`)           |
+| `http.createServer(app)`         | Creates a raw HTTP server (Socket.IO needs this) |
+| `new Server(server)` (Socket.IO) | Hooks into that server for WebSocket support     |
+| `server.listen(...)`             | Starts listening (replaces `app.listen(...)`)    |
+
+You can no longer use `app.listen(...)` once you're using Socket.IO because **Socket.IO must attach itself to the raw `http.Server` instance**, not the Express app directly.
+
+---
+
+So to allow **real-time communication + regular API routes**, we do:
+
+```js
+const app = express(); // For routes
+const server = http.createServer(app); // Main HTTP server
+const io = new Server(server); // Real-time communication layer
+
+// Start it all
+server.listen(5000);
+```
+
+---
+
+## 💥 Summary:
+
+| Concept             | Old (only Express)         | New (Socket.IO + Express)                    |
+| ------------------- | -------------------------- | -------------------------------------------- |
+| Start server        | `app.listen()`             | `http.createServer(app)` → `server.listen()` |
+| Real-time possible? | ❌ No                      | ✅ Yes                                       |
+| Used by Socket.IO   | ❌ Can't access app.listen | ✅ Needs raw server                          |
+
+---
+
+## 💡 Bonus: Still use Express routes!
+
+```js
+app.get("/api/ping", (req, res) => {
+  res.send("pong");
+});
+```
+
+Works exactly the same. Your **REST API is unaffected**.
+
+---
+
+# Websockets flow
+
+---
+
+## 📁 Folder Structure
+
+```
+project/
+├── backend/
+│   ├── index.js               ← Express + Socket.IO backend
+│   └── onlineUsers.js         ← Store online users (in-memory)
+│
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   │   ├── Sidebar.jsx    ← List users and show online status
+    │   ├── socket.js          ← Socket.IO connection logic
+    │   └── App.jsx            ← Main component
+```
+
+---
+
+## ⚙️ BACKEND
+
+## 📄 `backend/onlineUsers.js`
+
+```js
+const onlineUsers = new Map(); // { userId: socketId }
+
+function addUser(userId, socketId) {
+  onlineUsers.set(userId, socketId);
+}
+
+function removeUser(socketId) {
+  for (let [userId, id] of onlineUsers) {
+    if (id === socketId) {
+      onlineUsers.delete(userId);
+      break;
+    }
+  }
+}
+
+function getOnlineUsers() {
+  return Array.from(onlineUsers.keys());
+}
+
+module.exports = {
+  addUser,
+  removeUser,
+  getOnlineUsers,
+};
+```
+
+---
+
+## 📄 `backend/index.js`
+
+```js
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+
+const { addUser, removeUser, getOnlineUsers } = require("./onlineUsers");
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+app.use(cors());
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("user-connected", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("online-users", getOnlineUsers());
+  });
+
+  socket.on("disconnect", () => {
+    removeUser(socket.id);
+    io.emit("online-users", getOnlineUsers());
+  });
+});
+
+server.listen(5000, () => {
+  console.log("Server running on http://localhost:5000");
+});
+```
+
+---
+
+## 🌐 FRONTEND
+
+---
+
+## 📄 `frontend/src/socket.js`
+
+```js
+import { io } from "socket.io-client";
+export const socket = io("http://localhost:5000"); // Update if deployed
+```
+
+---
+
+## 📄 `frontend/src/components/Sidebar.jsx`
+
+```jsx
+import { useEffect, useState } from "react";
+import { socket } from "../socket";
+
+// fake data from DB
+const allUsersFromDB = [
+  { _id: "u1", name: "Shubham" },
+  { _id: "u2", name: "Ravi" },
+  { _id: "u3", name: "Priya" },
+];
+
+export default function Sidebar() {
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  useEffect(() => {
+    const myUserId = "u1"; // Replace with actual logged-in user ID
+    socket.emit("user-connected", myUserId);
+
+    socket.on("online-users", (userIds) => {
+      setOnlineUsers(userIds);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  return (
+    <div className="w-1/4 bg-gray-100 h-screen p-4">
+      <h2 className="text-xl font-bold mb-4">Users</h2>
+      {allUsersFromDB.map((user) => (
+        <div key={user._id} className="flex justify-between items-center mb-2">
+          <span>{user.name}</span>
+          <span
+            className={`text-xs font-semibold ${
+              onlineUsers.includes(user._id)
+                ? "text-green-500"
+                : "text-gray-400"
+            }`}
+          >
+            ●
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+## 📄 `frontend/src/App.jsx`
+
+```jsx
+import Sidebar from "./components/Sidebar";
+
+export default function App() {
+  return (
+    <div className="flex">
+      <Sidebar />
+      <div className="w-3/4 h-screen flex items-center justify-center text-gray-500">
+        <h2>Select a user to start chatting</h2>
+      </div>
+    </div>
+  );
+}
+```
+
+---

@@ -79,7 +79,6 @@ function Navbar() {
                       document.getElementById("logout_modal").showModal()
                     }
                   >
-                    <LogOut className="size-5" />
                     Logout
                   </button>
 

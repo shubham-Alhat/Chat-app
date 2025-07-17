@@ -11,10 +11,12 @@ import Loader from "./components/Loader.jsx";
 import { toast, Toaster } from "sonner";
 import api from "./lib/axios.js";
 import { User } from "lucide-react";
+import { useThemeStore } from "./store/useThemeStore.js";
 
 function App() {
   const { setAuthUser, authUser } = useAuthStore();
   const [isLoading, setLoading] = useState(true);
+  const { theme } = useThemeStore();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -49,7 +51,7 @@ function App() {
 
   return (
     <>
-      <div>
+      <div data-theme={theme}>
         <Navbar />
 
         <Routes>
