@@ -95,11 +95,11 @@ function Navbar() {
                           {/* Logout Button */}
                           <button
                             type="button"
-                            className="btn btn-error font-semibold"
+                            className="btn btn-error font-bold"
                             onClick={handleLogOut}
                           >
                             {isLoading ? (
-                              <Loader className="text-white" />
+                              <Loader className="text-base-content" />
                             ) : (
                               "Logout"
                             )}
