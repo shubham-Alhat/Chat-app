@@ -414,3 +414,171 @@ export default function App() {
 ```
 
 ---
+
+Perfect! You’ve just found the **core concept of theming in DaisyUI**. Let's now break down that table **in simple language**, with visuals and examples so you **fully understand when and how to use** each of them.
+
+---
+
+## 🎨 DaisyUI Color Naming System — Made Simple
+
+DaisyUI themes define colors in **pairs**:
+
+- `bg-color` → background
+- `text-color-content` → best text/icon color _on that background_
+
+Let’s explore each pair ↓
+
+---
+
+### 🟦 1. `primary` & `primary-content`
+
+| Class                  | Purpose                           | Example                          |
+| ---------------------- | --------------------------------- | -------------------------------- |
+| `bg-primary`           | Main brand color (e.g., blue)     | Button, link, etc.               |
+| `text-primary-content` | Text/icon to show on `bg-primary` | White or dark depending on theme |
+
+✅ **Use when you want to highlight brand actions.**
+
+```jsx
+<button className="bg-primary text-primary-content btn">Sign Up</button>
+```
+
+---
+
+### 🟪 2. `secondary` & `secondary-content`
+
+| Class                    | Purpose                      | Example             |
+| ------------------------ | ---------------------------- | ------------------- |
+| `bg-secondary`           | Optional second brand color  | Secondary CTA       |
+| `text-secondary-content` | Foreground on `bg-secondary` | Contrast text color |
+
+✅ **Use for less important or alternate actions.**
+
+```jsx
+<button className="bg-secondary text-secondary-content btn">Learn More</button>
+```
+
+---
+
+### 🟩 3. `accent` & `accent-content`
+
+| Class                 | Purpose                        | Example             |
+| --------------------- | ------------------------------ | ------------------- |
+| `bg-accent`           | Attention-grabbing color       | Highlights, tabs    |
+| `text-accent-content` | Contrast text/icon on `accent` | Icon/text inside it |
+
+✅ **Use for focused elements, highlights.**
+
+```jsx
+<div className="bg-accent text-accent-content p-4 rounded">
+  ⚡ Feature Spotlight
+</div>
+```
+
+---
+
+### ⚫ 4. `neutral` & `neutral-content`
+
+| Class                  | Purpose                   | Example                 |
+| ---------------------- | ------------------------- | ----------------------- |
+| `bg-neutral`           | Neutral, dark background  | Navbar, footer, dialogs |
+| `text-neutral-content` | Text/icon on `neutral` bg | Always readable text    |
+
+✅ **Use for UI elements like navbar, modals.**
+
+```jsx
+<footer className="bg-neutral text-neutral-content p-4">© 2025 YourApp</footer>
+```
+
+---
+
+### ⚪ 5. `base-*` & `base-content`
+
+| Class               | Purpose                        | Use Case        |
+| ------------------- | ------------------------------ | --------------- |
+| `bg-base-100`       | Main background                | Page background |
+| `bg-base-200`       | Slightly darker bg (elevation) | Cards           |
+| `bg-base-300`       | Even darker elevation bg       | Shadows         |
+| `text-base-content` | Text on top of base colors     | Default text    |
+
+✅ **Use to build structured layouts.**
+
+```jsx
+<div className="bg-base-100 text-base-content p-6 rounded-lg">
+  Main page content
+</div>
+```
+
+---
+
+### ℹ️ 6. `info`, `success`, `warning`, `error`
+
+Each is a semantic color set.
+
+| Type      | Background (`bg-*`)  | Text (`*-content`)   |
+| --------- | -------------------- | -------------------- |
+| `info`    | Helpful tip (blue)   | text-info-content    |
+| `success` | Success msg (green)  | text-success-content |
+| `warning` | Warning msg (yellow) | text-warning-content |
+| `error`   | Error msg (red)      | text-error-content   |
+
+✅ **Use for alerts, notifications, form feedback.**
+
+```jsx
+<div className="bg-success text-success-content p-4 rounded">
+  ✅ Your account has been created!
+</div>
+```
+
+---
+
+## 🧠 Summary Chart
+
+| UI Element       | Use These Classes                            |
+| ---------------- | -------------------------------------------- |
+| Brand Buttons    | `bg-primary` + `text-primary-content`        |
+| Secondary Button | `bg-secondary` + `text-secondary-content`    |
+| Highlight Tabs   | `bg-accent` + `text-accent-content`          |
+| Default Texts    | `text-base-content` on `bg-base-100/200`     |
+| Modals/Footer    | `bg-neutral` + `text-neutral-content`        |
+| Alerts           | `bg-success`, `bg-error`, etc. + `*-content` |
+
+---
+
+## ✅ How DaisyUI Helps
+
+When you switch themes (dark/light/custom), DaisyUI auto-adjusts:
+
+- All `*-content` colors
+- To stay readable on their paired backgrounds
+
+So **you don't have to worry about contrast or accessibility**.
+
+---
+
+Would you like a **ready-to-copy UI layout** using all these? Or a **theme switcher setup with 2-3 components** for reference?
+
+---
+
+| Token                                 | Used For                       |
+| ------------------------------------- | ------------------------------ |
+| `primary`                             | Main action color (e.g., CTA)  |
+| `primary-content`                     | Text on primary bg             |
+| `secondary`                           | Supporting actions             |
+| `accent`                              | Small highlights, badges       |
+| `neutral`                             | Cards, navbar, footer bg       |
+| `base-100`                            | Card/input background          |
+| `base-content`                        | Normal text                    |
+| `info`, `success`, `warning`, `error` | Status colors (toasts, alerts) |
+
+---
+
+| Token             | What it means (role)                               | Example usage                   |
+| ----------------- | -------------------------------------------------- | ------------------------------- |
+| `primary`         | Your main brand color (buttons, links, highlights) | `btn-primary`, `bg-primary`     |
+| `secondary`       | Secondary brand color (less emphasis)              | `btn-secondary`, `bg-secondary` |
+| `accent`          | A highlight or call-to-action color                | `bg-accent`, `text-accent`      |
+| `neutral`         | Neutral (grayish) for cards, UI shells             | `bg-neutral`, `text-neutral`    |
+| `base-100`        | Background layer color (cards, inputs)             | `bg-base-100`                   |
+| `base-content`    | Default text color on base backgrounds             | `text-base-content`             |
+| `primary-content` | Text/icon color on `bg-primary`                    | `text-primary-content`          |

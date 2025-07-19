@@ -47,9 +47,9 @@ function SignUpPage() {
       <div className="min-h-screen flex items-center justify-center bg-base-600">
         <form
           onSubmit={handleSubmit}
-          className="p-8 rounded-lg shadow-md w-full max-w-sm border border-accent bg-base-100 text-base-content"
+          className="p-8 rounded-lg shadow-md w-full max-w-sm border border-primary bg-base-100 text-base-content"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-primary">
+          <h2 className="text-2xl font-bold mb-6 text-center text-base-content">
             Sign Up
           </h2>
 
@@ -223,9 +223,9 @@ function SignUpPage() {
             </div>
           </div>
           <div>
-            <p className="text-base-content/60">
+            <p className="text-base-content/80">
               Already have an account{" "}
-              <Link to="/login" className="link link-primary">
+              <Link to="/login" className="text-blue-500">
                 Login
               </Link>
             </p>

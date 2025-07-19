@@ -44,7 +44,7 @@ function LoginPage() {
           onSubmit={handleSubmit}
           className="p-8 rounded-lg shadow-md w-full max-w-sm border border-accent bg-base-100 text-base-content"
         >
-          <h2 className="text-2xl font-bold mb-6 text-center text-primary">
+          <h2 className="text-2xl font-bold mb-6 text-center text-base-content">
             Login to Account
           </h2>
 
@@ -140,9 +140,9 @@ function LoginPage() {
             </div>
           </div>
           <div>
-            <p className="text-base-content/60">
+            <p className="text-base-content/80">
               Don't have an account{" "}
-              <Link to="/signup" className="link link-primary">
+              <Link to="/signup" className="text-blue-500">
                 Sign Up
               </Link>
             </p>

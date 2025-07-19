@@ -49,6 +49,8 @@ function ProfilePage() {
     setFile(null);
   };
 
+  console.log("authuser profile", authUser.avatar);
+
   return (
     <>
       <div className="h-screen pt-20">
@@ -64,10 +66,7 @@ function ProfilePage() {
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
                 <img
-                  src={
-                    authUser.avatar ||
-                    "https://res.cloudinary.com/diery17cm/image/upload/v1752744712/tnh4ocp8mnnnxu7pgrg0.jpg"
-                  }
+                  src={authUser.avatar || "/avatar.jpg"}
                   alt="Profile"
                   className="size-32 rounded-full object-cover border-4 "
                 />
