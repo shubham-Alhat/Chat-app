@@ -99,3 +99,24 @@ export const sendMessage = async (req, res) => {
     return res.status(500).json({ message: error.message, success: false });
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { messageId: id } = req.params;
+
+    const deletedMessage = await Message.findByIdAndDelete(id);
+
+    if (!deletedMessage) {
+      return res
+        .status(404)
+        .json({ message: "Message not found", success: false });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Message deleted successfully", success: true });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message, success: false });
+  }
+};

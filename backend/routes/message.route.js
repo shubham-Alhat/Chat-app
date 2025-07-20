@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 import {
+  deleteMessage,
   getMessages,
   getUsersForSidebar,
   sendMessage,
@@ -14,5 +15,6 @@ router.route("/users").get(verifyJwt, getUsersForSidebar);
 router.route("/:id").get(verifyJwt, getMessages);
 
 router.route("/send/:id").post(verifyJwt, upload.single("file"), sendMessage);
+router.route("/delete/:messageId").delete(verifyJwt, deleteMessage);
 
 export default router;

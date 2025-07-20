@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import api from "../lib/axios.js";
 import MessageInput from "./MessageInput.jsx";
 import MessageSkeleton from "../skeletons/MessageSkeleton.jsx";
+import { Trash2 } from "lucide-react";
 
 function UserChatBox() {
   const messageEndRef = useRef(null);
@@ -42,6 +43,21 @@ function UserChatBox() {
     getMessages();
   }, []);
 
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      setIsLoading(true);
+      const res = await api.delete(`/message/delete/${messageId}`);
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message, {
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return <MessageSkeleton />;
   }
@@ -57,43 +73,6 @@ function UserChatBox() {
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {/* {messages.map((message) => (
-            <div
-              key={message._id}
-              className={`chat ${
-                message.senderId === authUser._id ? "chat-end" : "chat-start"
-              }`}
-              ref={messageEndRef}
-            >
-              <div className=" chat-image avatar">
-                <div className="size-10 rounded-full border flex flex-col">
-                  <img
-                    src={
-                      message.senderId === authUser._id
-                        ? authUser.avatar || "/avatar.jpg"
-                        : selectedUser.avatar || "/avatar.jpg"
-                    }
-                    alt="profile pic"
-                  />
-                </div>
-              </div>
-              <div className="chat-header mb-1">
-                <time className="text-xs opacity-50 ml-1">
-                  {formatMessageTime(message.createdAt)}
-                </time>
-              </div>
-              <div className="chat-bubble flex flex-col">
-                {message.image && (
-                  <img
-                    src={message.image}
-                    alt="Attachment"
-                    className="sm:max-w-[200px] rounded-md mb-2"
-                  />
-                )}
-                {message.text && <p>{message.text}</p>}
-              </div>
-            </div>
-          ))} */}
             {/* my new try */}
             {messages.map((message) => (
               <div
@@ -103,6 +82,51 @@ function UserChatBox() {
                 }`}
                 ref={messageEndRef}
               >
+                {message.senderId === authUser._id ? (
+                  <>
+                    {/* delete button */}
+                    <button
+                      className="btn btn-sm hover:text-accent"
+                      onClick={() =>
+                        document
+                          .getElementById("confirmation_model")
+                          .showModal()
+                      }
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                    {/* dialog toggle */}
+                    <dialog id="confirmation_model" className="modal">
+                      <div className="modal-box">
+                        <h3 className="font-bold text-lg">Confirm delete</h3>
+                        <p className="py-4">
+                          Are you sure you want to delete this message?
+                        </p>
+                        <div className="modal-action">
+                          <form method="dialog" className="space-x-2">
+                            {/* Close Button */}
+                            <button className="btn">Cancel</button>
+
+                            {/* delete Button */}
+                            <button
+                              type="button"
+                              className="btn btn-error font-bold"
+                              onClick={() => handleDeleteMessage(message._id)}
+                            >
+                              {isLoading ? (
+                                <Loader className="text-base-content" />
+                              ) : (
+                                "delete"
+                              )}
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
+                  </>
+                ) : (
+                  <div></div>
+                )}
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
                     <img

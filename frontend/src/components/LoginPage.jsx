@@ -42,7 +42,7 @@ function LoginPage() {
       <div className="min-h-screen flex items-center justify-center bg-base-500">
         <form
           onSubmit={handleSubmit}
-          className="p-8 rounded-lg shadow-md w-full max-w-sm border border-accent bg-base-100 text-base-content"
+          className="p-8 rounded-lg shadow-md w-full max-w-sm border border-primary bg-base-100 text-base-content"
         >
           <h2 className="text-2xl font-bold mb-6 text-center text-base-content">
             Login to Account
