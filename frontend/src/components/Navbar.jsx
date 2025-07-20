@@ -16,6 +16,7 @@ function Navbar() {
     try {
       const res = await api.post("/auth/logout");
       setAuthUser(null);
+
       toast.success(res.data.message);
       navigate("/login");
     } catch (error) {
