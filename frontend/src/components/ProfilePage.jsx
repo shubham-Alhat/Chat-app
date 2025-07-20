@@ -49,7 +49,7 @@ function ProfilePage() {
     setFile(null);
   };
 
-  console.log("authuser profile", authUser.avatar);
+  // console.log("authuser profile", authUser.avatar);
 
   return (
     <>

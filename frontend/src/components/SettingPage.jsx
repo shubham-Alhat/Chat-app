@@ -1,6 +1,7 @@
 import { THEMES } from "../constants/index.js";
 import { useThemeStore } from "../store/useThemeStore";
 import { Send } from "lucide-react";
+import MessageInput from "./MessageInput.jsx";
 
 const PREVIEW_MESSAGES = [
   { id: 1, content: "Hey! How's it going?", isSent: false },
@@ -110,6 +111,7 @@ const SettingsPage = () => {
                 </div>
 
                 {/* Chat Input */}
+
                 <div className="p-4 border-t border-base-300 bg-base-100">
                   <div className="flex gap-2">
                     <input

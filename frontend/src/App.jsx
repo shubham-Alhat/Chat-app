@@ -12,9 +12,12 @@ import { toast, Toaster } from "sonner";
 import api from "./lib/axios.js";
 import { User } from "lucide-react";
 import { useThemeStore } from "./store/useThemeStore.js";
+import useChatStore from "./store/useChatStore.js";
+import UserChatBox from "./components/UserChatBox.jsx";
 
 function App() {
   const { setAuthUser, authUser } = useAuthStore();
+  const { selectedUser, setSelectedUser } = useChatStore();
   const [isLoading, setLoading] = useState(true);
   const { theme } = useThemeStore();
 
@@ -58,6 +61,10 @@ function App() {
           <Route
             path="/"
             element={authUser ? <HomePage /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/chat"
+            element={selectedUser ? <UserChatBox /> : <Navigate to={"/"} />}
           />
           <Route
             path="/signup"
