@@ -4,15 +4,18 @@ import { toast } from "sonner";
 import api from "../lib/axios.js";
 import useChatStore from "../store/useChatStore.js";
 import Loader from "./Loader.jsx";
+import useSocketStore from "../store/useSocketStore.js";
 
 function MessageInput() {
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const { selectedUser } = useChatStore();
+  const { selectedUser, addNewMessage } = useChatStore();
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const { socketState, setSocketState } = useSocketStore();
+  console.log(socketState);
 
   // send message to db
   const handleSendMessage = async (e) => {
@@ -29,6 +32,12 @@ function MessageInput() {
     if (file) formData.append("file", file);
     try {
       const res = await api.post(`/message/send/${selectedUser._id}`, formData);
+      addNewMessage(res.data.newMessage);
+      // emit send message
+      socketState.emit("send-message", {
+        recieverId: selectedUser._id,
+        message: res.data.newMessage,
+      });
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);

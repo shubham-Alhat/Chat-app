@@ -9,7 +9,7 @@ import useSocketStore from "../store/useSocketStore.js";
 function Sidebar() {
   const { setUsersForChat, usersForChat, setSelectedUser, selectedUser } =
     useChatStore();
-  const { onlineUsers } = useSocketStore();
+  const { onlineUsers, socketState } = useSocketStore();
 
   const navigate = useNavigate();
 

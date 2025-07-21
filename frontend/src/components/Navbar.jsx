@@ -1,4 +1,10 @@
-import { LogOut, MessageSquare, Settings, User } from "lucide-react";
+import {
+  LogOut,
+  LogOutIcon,
+  MessageSquare,
+  Settings,
+  User,
+} from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore.js";
@@ -81,12 +87,13 @@ function Navbar() {
                     <span className="hidden sm:inline">Logout</span>
                   </button> */}
                   <button
-                    className="btn"
+                    className="btn btn-sm gap-2"
                     onClick={() =>
                       document.getElementById("logout_modal").showModal()
                     }
                   >
-                    Logout
+                    <LogOutIcon className="size-5" />
+                    <span className="hidden sm:inline">Logout</span>
                   </button>
 
                   <dialog id="logout_modal" className="modal">

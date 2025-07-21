@@ -112,9 +112,11 @@ export const deleteMessage = async (req, res) => {
         .json({ message: "Message not found", success: false });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Message deleted successfully", success: true });
+    return res.status(200).json({
+      message: "Message deleted successfully",
+      success: true,
+      deleteMessage: deleteMessage,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: error.message, success: false });

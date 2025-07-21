@@ -17,8 +17,16 @@ io.on("connection", (socket) => {
   // add user when connect on frontend
   socket.on("user-connected", (userId) => {
     addUser(userId, socket.id);
+    socket.join(userId);
     // send onlineUsers when connected
     io.emit("online-users", getOnlineUsers());
+  });
+
+  // recieve and send messages
+  socket.on("send-message", ({ recieverId, message }) => {
+    // send to receiver room directly
+    console.log(message);
+    io.to(recieverId).emit("recieve-message", { message });
   });
 
   socket.on("disconnect", () => {

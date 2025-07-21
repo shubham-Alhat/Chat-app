@@ -8,17 +8,22 @@ import api from "../lib/axios.js";
 import MessageInput from "./MessageInput.jsx";
 import MessageSkeleton from "../skeletons/MessageSkeleton.jsx";
 import { Trash2 } from "lucide-react";
+import Loader from "./Loader.jsx";
+import useSocketStore from "../store/useSocketStore.js";
 
 function UserChatBox() {
   const messageEndRef = useRef(null);
-  const { messages, setMessages, selectedUser } = useChatStore();
+  const { messages, setMessages, selectedUser, deleteMessage, addNewMessage } =
+    useChatStore();
   const { authUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const { socketState } = useSocketStore();
 
   useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
+    console.log(messages);
   }, [messages]);
 
   useEffect(() => {
@@ -43,10 +48,23 @@ function UserChatBox() {
     getMessages();
   }, []);
 
+  useEffect(() => {
+    const handleReceiveMessage = (newMessage) => {
+      console.log(newMessage);
+
+      addNewMessage(newMessage);
+    };
+    if (socketState) {
+      socketState.on("recieve-message", handleReceiveMessage);
+    }
+
+    return () => socketState.off("recieve-message", handleReceiveMessage);
+  }, []);
+
   const handleDeleteMessage = async (messageId) => {
     try {
-      setIsLoading(true);
       const res = await api.delete(`/message/delete/${messageId}`);
+      deleteMessage(messageId);
       toast.success(res.data.message);
     } catch (error) {
       console.log(error);
@@ -54,11 +72,10 @@ function UserChatBox() {
         description: error.message,
       });
     } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !selectedUser || !authUser || !messages) {
     return <MessageSkeleton />;
   }
 
@@ -74,9 +91,9 @@ function UserChatBox() {
         ) : (
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {/* my new try */}
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <div
-                key={message._id}
+                key={message._id || index}
                 className={`chat ${
                   message.senderId === authUser._id ? "chat-end" : "chat-start"
                 }`}
@@ -86,47 +103,23 @@ function UserChatBox() {
                   <>
                     {/* delete button */}
                     <button
+                      key={message._id}
                       className="btn btn-sm hover:text-accent"
-                      onClick={() =>
-                        document
-                          .getElementById("confirmation_model")
-                          .showModal()
-                      }
+                      disabled={isLoading}
+                      // onClick={() =>
+                      //   document
+                      //     .getElementById("confirmation_model")
+                      //     .showModal()
+                      // }
+                      onClick={() => handleDeleteMessage(message._id)}
                     >
                       <Trash2 size={18} />
                     </button>
-                    {/* dialog toggle */}
-                    <dialog id="confirmation_model" className="modal">
-                      <div className="modal-box">
-                        <h3 className="font-bold text-lg">Confirm delete</h3>
-                        <p className="py-4">
-                          Are you sure you want to delete this message?
-                        </p>
-                        <div className="modal-action">
-                          <form method="dialog" className="space-x-2">
-                            {/* Close Button */}
-                            <button className="btn">Cancel</button>
-
-                            {/* delete Button */}
-                            <button
-                              type="button"
-                              className="btn btn-error font-bold"
-                              onClick={() => handleDeleteMessage(message._id)}
-                            >
-                              {isLoading ? (
-                                <Loader className="text-base-content" />
-                              ) : (
-                                "delete"
-                              )}
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </dialog>
                   </>
                 ) : (
                   <div></div>
                 )}
+
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
                     <img
