@@ -5,11 +5,14 @@ import useAuthStore from "../store/useAuthStore.js";
 import { toast } from "sonner";
 import Loader from "./Loader.jsx";
 import api from "../lib/axios.js";
+import socket from "../lib/socket.js";
+import useSocketStore from "../store/useSocketStore.js";
 
 function Navbar() {
   const { authUser, setAuthUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setSocketState } = useSocketStore();
 
   const handleLogOut = async () => {
     setIsLoading(true);
@@ -28,6 +31,9 @@ function Navbar() {
       setAuthUser(null);
     } finally {
       setIsLoading(false);
+      // socket disconnect
+      socket.disconnect();
+      setSocketState(null);
     }
   };
 

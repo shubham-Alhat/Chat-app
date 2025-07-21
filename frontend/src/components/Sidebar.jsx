@@ -4,10 +4,12 @@ import useChatStore from "../store/useChatStore.js";
 import api from "../lib/axios.js";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import useSocketStore from "../store/useSocketStore.js";
 
 function Sidebar() {
   const { setUsersForChat, usersForChat, setSelectedUser, selectedUser } =
     useChatStore();
+  const { onlineUsers } = useSocketStore();
 
   const navigate = useNavigate();
 
@@ -51,9 +53,18 @@ function Sidebar() {
             `}
           >
             {/* Avatar */}
-            <div className="avatar">
+            <div className="avatar relative">
               <div className="w-12 rounded-full">
                 <img src={user.avatar || "/avatar.jpg"} alt={user.fullName} />
+              </div>
+              {/* green dot o online users */}
+              <div>
+                {onlineUsers.includes(user._id) && (
+                  <span
+                    className="absolute bottom-0 right-0 size-3 bg-green-500 
+                  rounded-full ring-2 ring-zinc-900"
+                  />
+                )}
               </div>
             </div>
 
