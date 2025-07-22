@@ -32,7 +32,7 @@ function UserChatBox() {
       try {
         const res = await api.get(`/message/${selectedUser._id}`);
         setMessages(res.data.messages);
-        toast.success(res.data.message);
+        // toast.success(res.data.message);
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message, {
