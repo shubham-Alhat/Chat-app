@@ -25,8 +25,8 @@ io.on("connection", (socket) => {
   // recieve and send messages
   socket.on("send-message", ({ recieverId, message }) => {
     // send to receiver room directly
-    console.log(message);
-    io.to(recieverId).emit("recieve-message", { message });
+    // io.to(recieverId).emit("recieve-message", message);
+    socket.to(recieverId).emit("recieve-message", message);
   });
 
   socket.on("disconnect", () => {

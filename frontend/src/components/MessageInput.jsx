@@ -15,7 +15,7 @@ function MessageInput() {
 
   const [isLoading, setIsLoading] = useState(false);
   const { socketState, setSocketState } = useSocketStore();
-  console.log(socketState);
+  // console.log(socketState);
 
   // send message to db
   const handleSendMessage = async (e) => {

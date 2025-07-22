@@ -14,7 +14,7 @@ const useChatStore = create((set, get) => ({
     set({ usersForChat: users });
   },
   addNewMessage: (newMessage) => {
-    set({ messages: [...get().messages, newMessage.message] });
+    set((state) => ({ messages: [...state.messages, newMessage] }));
   },
   deleteMessage: (messageId) => {
     set((state) => ({

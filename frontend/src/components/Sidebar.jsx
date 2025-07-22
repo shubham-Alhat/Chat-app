@@ -9,7 +9,7 @@ import useSocketStore from "../store/useSocketStore.js";
 function Sidebar() {
   const { setUsersForChat, usersForChat, setSelectedUser, selectedUser } =
     useChatStore();
-  const { onlineUsers, socketState } = useSocketStore();
+  const { onlineUsers } = useSocketStore();
 
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ function Sidebar() {
       try {
         const res = await api.get("/message/users");
         setUsersForChat(res.data.filteredUsers);
-        toast.success(res.data.message);
+        // toast.success(res.data.message);
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message, {
