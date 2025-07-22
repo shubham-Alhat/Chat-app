@@ -87,7 +87,12 @@ function MessageInput() {
           </div>
         )}
 
-        <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+        <form
+          key={selectedUser._id}
+          name="text-input"
+          onSubmit={handleSendMessage}
+          className="flex items-center gap-2"
+        >
           <div className="flex-1 flex gap-2 items-center">
             <input
               type="text"

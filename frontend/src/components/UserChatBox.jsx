@@ -23,7 +23,7 @@ function UserChatBox() {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    console.log(messages); // Array of message
+    // console.log(messages); // Array of message
   }, [messages]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function UserChatBox() {
 
   useEffect(() => {
     const handleReceiveMessage = (newMessage) => {
-      console.log(newMessage); // New message receive
+      // console.log(newMessage); // New message receive
 
       addNewMessage(newMessage);
     };
