@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
   // join room when this event emit
   socket.on("join-chat", (chatId) => {
     socket.join(chatId);
-    console.log("chat id", chatId);
+    // console.log("chat id", chatId);
   });
 
   // recieve and send messages
