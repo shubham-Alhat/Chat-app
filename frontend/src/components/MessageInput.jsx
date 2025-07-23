@@ -5,12 +5,14 @@ import api from "../lib/axios.js";
 import useChatStore from "../store/useChatStore.js";
 import Loader from "./Loader.jsx";
 import useSocketStore from "../store/useSocketStore.js";
+import useAuthStore from "../store/useAuthStore.js";
 
 function MessageInput() {
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const { selectedUser, addNewMessage } = useChatStore();
+  const { authUser } = useAuthStore();
   const fileInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,9 +35,13 @@ function MessageInput() {
     try {
       const res = await api.post(`/message/send/${selectedUser._id}`, formData);
       addNewMessage(res.data.newMessage);
+
+      // Both user IDs as strings
+      const chatId = [authUser._id, selectedUser._id].sort().join("_");
+
       // emit send message
       socketState.emit("send-message", {
-        recieverId: selectedUser._id,
+        chatId: chatId,
         message: res.data.newMessage,
       });
       toast.success(res.data.message);

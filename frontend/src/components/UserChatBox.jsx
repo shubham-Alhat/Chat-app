@@ -20,6 +20,13 @@ function UserChatBox() {
   const { socketState } = useSocketStore();
 
   useEffect(() => {
+    const chatId = [authUser._id, selectedUser._id].sort().join("_");
+    if (socketState) {
+      socketState.emit("join-chat", chatId);
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -48,10 +55,18 @@ function UserChatBox() {
     getMessages();
   }, []);
 
+  // leaving all rooms and joining new room
+  useEffect(() => {
+    const chatId = [authUser._id, selectedUser._id].sort().join("_");
+    if (socketState) {
+      // Leave all rooms before joining new one
+      socketState.emit("leave-all-chats");
+      socketState.emit("join-chat", chatId);
+    }
+  }, [selectedUser]);
+
   useEffect(() => {
     const handleReceiveMessage = (newMessage) => {
-      // console.log(newMessage); // New message receive
-
       addNewMessage(newMessage);
     };
     if (socketState) {

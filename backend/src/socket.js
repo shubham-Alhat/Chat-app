@@ -17,16 +17,32 @@ io.on("connection", (socket) => {
   // add user when connect on frontend
   socket.on("user-connected", (userId) => {
     addUser(userId, socket.id);
-    socket.join(userId);
+    // socket.join(userId);
     // send onlineUsers when connected
     io.emit("online-users", getOnlineUsers());
   });
 
+  // join room when this event emit
+  socket.on("join-chat", (chatId) => {
+    socket.join(chatId);
+    console.log("chat id", chatId);
+  });
+
   // recieve and send messages
-  socket.on("send-message", ({ recieverId, message }) => {
+  socket.on("send-message", ({ chatId, message }) => {
     // send to receiver room directly
     // io.to(recieverId).emit("recieve-message", message);
-    socket.to(recieverId).emit("recieve-message", message);
+    console.log("chatId when send message", chatId);
+    socket.to(chatId).emit("recieve-message", message);
+  });
+
+  socket.on("leave-all-chats", () => {
+    // Leave all rooms except the default room (socket.id)
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.leave(room);
+      }
+    }
   });
 
   socket.on("disconnect", () => {

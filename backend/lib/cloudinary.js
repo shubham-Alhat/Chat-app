@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 // clodinary configuration
 cloudinary.config({
@@ -20,18 +22,20 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
-    fs.unlinkSync(localFilePath);
+    fs.unlink(localFilePath, (err) => {
+      if (err) console.error("Error deleting file:", err);
+    });
 
     return response;
   } catch (error) {
-    fs.unlink(localFilePath);
+    fs.unlink(localFilePath, (err) => {
+      if (err) console.log("Error deleting file:", err);
+    });
     console.log(error);
-    return res
-      .status(500)
-      .json({
-        message: "Cloudinary server error while uploading file.",
-        success: false,
-      });
+    return res.status(500).json({
+      message: "Cloudinary server error while uploading file.",
+      success: false,
+    });
   }
 };
 
