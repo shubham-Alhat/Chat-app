@@ -17,7 +17,7 @@ router.get("/:id", verifyJwt, getMessages);
 router.post("/send/:id", verifyJwt, upload.single("file"), sendMessage);
 router.delete("/delete/:messageId", verifyJwt, deleteMessage);
 
-router.get("/users", protectRoute, getUsersForSidebar); // <----
+// router.get("/users", protectRoute, getUsersForSidebar); // <----
 
 // router.route("/send/:id").post(verifyJwt, upload.single("file"), sendMessage);
 // router.route("/delete/:messageId").delete(verifyJwt, deleteMessage);
