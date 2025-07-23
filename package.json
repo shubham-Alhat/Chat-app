@@ -4,7 +4,7 @@
   "description": "> “How does a file selected in the frontend even reach `req.file.path` in backend?”",
   "main": "index.js",
   "scripts": {
-    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "npm install --prefix backend && npm audit fix --prefix backend && npm install --prefix frontend && npm audit fix --prefix frontend && npm run build --prefix frontend",
     "start": "npm run start --prefix backend"
   },
   "repository": {
